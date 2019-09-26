@@ -33,7 +33,6 @@ export default {
    */
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
-    '@nuxtjs/eslint-module'
   ],
   /*
    ** Nuxt.js modules
@@ -41,7 +40,13 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    'bootstrap-vue/nuxt',
+    ['wp-nuxt', {
+      endpoint: 'https://progressandfortune.com/ihmastermind-api/go/wp-json',
+      extensions: true // For additional functions of wpapi-extensions
+      /* other options of WP-API */
+    }]
   ],
   /*
    ** Axios module configuration
@@ -53,8 +58,18 @@ export default {
    */
   build: {
     /*
-     ** You can extend webpack config here
-     */
-    extend(config, ctx) {}
+       ** You can extend webpack config here
+       */
+    extend (config, ctx) {
+      // Run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
+      }
+    }
   }
 }

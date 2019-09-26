@@ -1,24 +1,21 @@
 <template>
   <div class="container">
     <div>
-      <logo />
+      <logo></logo>
       <h1 class="title">
         ihmastermind-ui
       </h1>
       <h2 class="subtitle">
         Internet Hustler Mastermind UI
       </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
+      <div
+        v-for="(article, index) in articles"
+        :key="index"
+      >
+        <article-post-card
+          :article="article"
         >
-          GitHub
-        </a>
+        </article-post-card>
       </div>
     </div>
   </div>
@@ -26,10 +23,22 @@
 
 <script>
 import Logo from '~/components/Logo.vue'
-
+import ArticlePostCard from '~/components/ArticlePostCard'
 export default {
   components: {
-    Logo
+    Logo,
+    ArticlePostCard
+  },
+  async asyncData ({ app, error }) {
+    try {
+      const articles = await app.$wp.posts().perPage(10)
+      console.log(articles)
+      return {
+        articles
+      }
+    } catch (e) {
+      error(e)
+    }
   }
 }
 </script>
